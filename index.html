@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice-Controlled Expense Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Voice-Controlled Expense Tracker</h1>
+        
+        <div class="voice-control">
+            <button id="startRecording" class="record-btn">
+                <span class="mic-icon">🎤</span>
+                Start Recording
+            </button>
+            <div id="recordingStatus" class="recording-status"></div>
+        </div>
+
+        <div class="expenses-list">
+            <div class="tabs-container">
+                <div class="tabs" id="tabsList">
+                    <div class="tab active" data-tab="tab1">
+                        <span class="tab-title">Expenses</span>
+                        <button class="close-tab">×</button>
+                    </div>
+                </div>
+                <button id="newTabBtn" class="new-tab-btn">+</button>
+            </div>
+            <div class="tab-content">
+                <div id="expensesList"></div>
+                <div class="tab-summary">
+                    <div class="summary">
+                        <h2>Tab Summary</h2>
+                        <div id="totalExpenses">Total: $0.00</div>
+                        <div class="summary-buttons">
+                            <button id="undoDelete" class="undo-btn" disabled>↩️ Undo Delete</button>
+                            <button id="clearExpenses" class="clear-btn">Clear All Expenses</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Expense Modal -->
+    <div id="addExpenseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Expense</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addExpenseForm">
+                    <div class="form-group">
+                        <label for="expenseAmount">Amount ($)</label>
+                        <input type="number" id="expenseAmount" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="expenseCategory">Category</label>
+                        <select id="expenseCategory" required>
+                            <option value="food">Food</option>
+                            <option value="transport">Transport</option>
+                            <option value="utilities">Utilities</option>
+                            <option value="entertainment">Entertainment</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="expenseDescription">Description</label>
+                        <input type="text" id="expenseDescription" required>
+                    </div>
+                    <button type="submit" class="submit-btn">Add Expense</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
