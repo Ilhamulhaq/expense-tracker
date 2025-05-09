@@ -167,14 +167,37 @@ class ExpenseTracker {
     processVoiceCommand(transcript) {
         console.log('Transcript:', transcript);
         
-        const amountMatch = transcript.match(/\$?(\d+(?:\.\d{1,2})?)/);
-        const amount = amountMatch ? parseFloat(amountMatch[1]) : null;
+        // Convert Indian number formats to actual numbers
+        let amount = null;
+        const transcriptLower = transcript.toLowerCase();
+        
+        // Handle lakhs
+        if (transcriptLower.includes('lakh')) {
+            const lakhMatch = transcriptLower.match(/(\d+)\s*lakh/);
+            if (lakhMatch) {
+                amount = parseFloat(lakhMatch[1]) * 100000;
+            }
+        }
+        // Handle crores
+        else if (transcriptLower.includes('crore')) {
+            const croreMatch = transcriptLower.match(/(\d+)\s*crore/);
+            if (croreMatch) {
+                amount = parseFloat(croreMatch[1]) * 10000000;
+            }
+        }
+        // Handle regular numbers
+        else {
+            const amountMatch = transcriptLower.match(/\$?(\d+(?:\.\d{1,2})?)/);
+            amount = amountMatch ? parseFloat(amountMatch[1]) : null;
+        }
 
         const categories = ['food', 'transport', 'utilities', 'entertainment', 'other'];
-        const category = categories.find(cat => transcript.includes(cat)) || 'other';
+        const category = categories.find(cat => transcriptLower.includes(cat)) || 'other';
 
-        let description = transcript
+        let description = transcriptLower
             .replace(/\$?\d+(?:\.\d{1,2})?/, '')
+            .replace(/\d+\s*lakh/, '')
+            .replace(/\d+\s*crore/, '')
             .replace(category, '')
             .trim();
 
@@ -197,7 +220,17 @@ class ExpenseTracker {
             this.updateTabSummary(tabId);
             this.saveTabs();
             
-            document.getElementById('recordingStatus').textContent = `Added: $${amount} for ${category}`;
+            // Format the amount for display
+            let displayAmount;
+            if (amount >= 10000000) {
+                displayAmount = `${(amount/10000000).toFixed(2)} crore`;
+            } else if (amount >= 100000) {
+                displayAmount = `${(amount/100000).toFixed(2)} lakh`;
+            } else {
+                displayAmount = `$${amount.toFixed(2)}`;
+            }
+            
+            document.getElementById('recordingStatus').textContent = `Added: ${displayAmount} for ${category}`;
             setTimeout(() => {
                 document.getElementById('recordingStatus').textContent = '';
             }, 2000);
